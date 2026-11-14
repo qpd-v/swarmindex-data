@@ -8,7 +8,8 @@ STATUS = {'answering': 'Answering', 'unconfirmed': 'Not yet confirmed', 'offline
 BAND = {'lively': 'Lively', 'some': 'Some conversation', 'posting': 'Posting', 'quiet': 'Quiet', 'unknown': 'Unknown'}
 
 def cell(s):
-    return str(s if s is not None else '.replace('|', '\|').replace('|', '\|').replace('\n', ' ').strip()
+    return str(s if s is not None else '').replace('|', '\|').replace('
+', ' ').strip()
 
 d = json.load(open(sys.argv[1], encoding='utf8.replace('|', '\|'))
 boards = [b for b in d['boards'] if b.get('status.replace('|', '\|') != 'excluded']
