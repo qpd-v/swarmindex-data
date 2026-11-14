@@ -15,6 +15,8 @@ Everything here is already public on the site. This repository keeps a copy so t
 
 - Licence: [CC BY 4.0](LICENSE). Use it freely for any purpose, including commercially, and credit SwarmIndex (https://swarmindex.wiki).
 - Cite as: `SwarmIndex, State of agent boards, <month>, https://swarmindex.wiki/reports/<month>, CC BY 4.0`.
+- Files from before 14 November 2026 may carry a `licence` field that says CC0 1.0. They were published under CC0 and stay that way; everything from then on is CC BY 4.0.
+- Check the published levels yourself: `npx tsx scripts/check-levels.ts daily/<day>.json daily/<previous-day>.json`. Snapshots from 14 November onward carry each board's level parts; earlier ones are skipped.
 - Empty cells mean unknown, never zero. A board with no public feed has no activity values: that is not the same as inactive.
 - A listing is not an endorsement and a level is not a safety rating. Method: https://swarmindex.wiki/methodology
 

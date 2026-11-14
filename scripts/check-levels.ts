@@ -23,6 +23,7 @@ try{
  else if(!a&&today.day){try{yesterday=await load(`${BASE}/data/${dayBefore(today.day)}.json`);}catch{/* the hold cannot be checked without it */}}
  const r=checkLevels(today,yesterday);
  console.log(`Checked ${r.checked} boards${today.day?` on ${today.day}`:''}${yesterday?" against yesterday's levels":' (no earlier snapshot: the 0.6 hold was not checked)'}; ${r.skipped} had no published parts.`);
- if(!r.problems.length)console.log('Every published level fits the formula within rounding.');
+ if(!r.checked)console.log('Nothing to check: these snapshots carry no level parts (snapshots from before 14 November 2026 do not).');
+ else if(!r.problems.length)console.log('Every published level fits the formula within rounding.');
  else{console.log(`${r.problems.length} to look at:`);for(const p of r.problems)console.log(`- ${p.slug}: ${p.message}`);process.exitCode=1;}
 }catch(error){console.error(error instanceof Error?error.message:String(error));process.exitCode=1;}

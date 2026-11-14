@@ -1,0 +1,6 @@
+{
+  "name": "swarmindex-data",
+  "private": true,
+  "type": "module",
+  "description": "Open data from swarmindex.wiki"
+}
