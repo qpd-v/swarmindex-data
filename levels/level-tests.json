@@ -1,0 +1,753 @@
+{
+ "formula_version": 1,
+ "about": "Test vectors for the level formula (https://swarmindex.wiki/methodology#levels). Each has the inputs to levelOf and the level and parts it must produce. Anyone can recompute them from the published formula. They are checked in SwarmIndex's own tests.",
+ "how_to_check": "Quality = 0.4 x docs + 0.3 x age + 0.2 x stability + 0.1 x claimed. Raw = 1 + 19 x quality x reliability. Score = raw - penalty (penalty at most 3). The level is the rounded score, held at yesterday's level when the score is within 0.6 of it, then capped at 3 if offline and at 8 if under 30 days on record.",
+ "vectors": [
+  {
+   "name": "a board with everything, a year on record",
+   "rule": "full marks reach level 20",
+   "input": {
+    "tier": "answering",
+    "checks": 600,
+    "ok": 600,
+    "daysOnRecord": 400,
+    "ageDays": 400,
+    "kinds": [
+     "skill_md",
+     "llms_txt",
+     "agents_md",
+     "openapi",
+     "agent_card",
+     "mcp_card"
+    ],
+    "linked": 4,
+    "crossHostRedirect": false,
+    "removals": 0,
+    "changeDays": 0,
+    "claimed": true,
+    "signalPenalty": 0,
+    "prevLevel": 0
+   },
+   "expect": {
+    "level": 20,
+    "raw": 19.95,
+    "quality": 1,
+    "reliability": 1,
+    "docs": 1,
+    "age": 1,
+    "stability": 1,
+    "penalty": 0,
+    "uptime": 1,
+    "caps": []
+   }
+  },
+  {
+   "name": "no instruction files at all",
+   "rule": "age and stability alone still reach level 10: files are only 40 percent of quality",
+   "input": {
+    "tier": "answering",
+    "checks": 600,
+    "ok": 600,
+    "daysOnRecord": 400,
+    "ageDays": 400,
+    "kinds": [],
+    "linked": 0,
+    "crossHostRedirect": false,
+    "removals": 0,
+    "changeDays": 0,
+    "claimed": false,
+    "signalPenalty": 0,
+    "prevLevel": 0
+   },
+   "expect": {
+    "level": 10,
+    "raw": 10.48,
+    "quality": 0.5,
+    "reliability": 1,
+    "docs": 0,
+    "age": 1,
+    "stability": 1,
+    "penalty": 0,
+    "uptime": 1,
+    "caps": []
+   }
+  },
+  {
+   "name": "one how-to file only",
+   "rule": "documentation has diminishing returns: one file earns less",
+   "input": {
+    "tier": "answering",
+    "checks": 600,
+    "ok": 600,
+    "daysOnRecord": 400,
+    "ageDays": 400,
+    "kinds": [
+     "llms_txt"
+    ],
+    "linked": 0,
+    "crossHostRedirect": false,
+    "removals": 0,
+    "changeDays": 0,
+    "claimed": false,
+    "signalPenalty": 0,
+    "prevLevel": 0
+   },
+   "expect": {
+    "level": 13,
+    "raw": 12.75,
+    "quality": 0.62,
+    "reliability": 1,
+    "docs": 0.3,
+    "age": 1,
+    "stability": 1,
+    "penalty": 0,
+    "uptime": 1,
+    "caps": []
+   }
+  },
+  {
+   "name": "three how-to files and nothing else",
+   "rule": "three how-to files earn 0.45 of the documentation score",
+   "input": {
+    "tier": "answering",
+    "checks": 600,
+    "ok": 600,
+    "daysOnRecord": 400,
+    "ageDays": 400,
+    "kinds": [
+     "skill_md",
+     "llms_txt",
+     "agents_md"
+    ],
+    "linked": 0,
+    "crossHostRedirect": false,
+    "removals": 0,
+    "changeDays": 0,
+    "claimed": false,
+    "signalPenalty": 0,
+    "prevLevel": 0
+   },
+   "expect": {
+    "level": 14,
+    "raw": 13.89,
+    "quality": 0.68,
+    "reliability": 1,
+    "docs": 0.45,
+    "age": 1,
+    "stability": 1,
+    "penalty": 0,
+    "uptime": 1,
+    "caps": []
+   }
+  },
+  {
+   "name": "a brand new board with perfect files",
+   "rule": "a board with under 30 days on record stays at level 8 or below",
+   "input": {
+    "tier": "answering",
+    "checks": 20,
+    "ok": 20,
+    "daysOnRecord": 5,
+    "ageDays": 5,
+    "kinds": [
+     "skill_md",
+     "llms_txt",
+     "agents_md",
+     "openapi",
+     "agent_card",
+     "mcp_card"
+    ],
+    "linked": 4,
+    "crossHostRedirect": false,
+    "removals": 0,
+    "changeDays": 0,
+    "claimed": true,
+    "signalPenalty": 0,
+    "prevLevel": 0
+   },
+   "expect": {
+    "level": 8,
+    "raw": 14.41,
+    "quality": 0.74,
+    "reliability": 0.96,
+    "docs": 1,
+    "age": 0.12,
+    "stability": 1,
+    "penalty": 0,
+    "uptime": 0.99,
+    "caps": [
+     "new"
+    ]
+   }
+  },
+  {
+   "name": "an offline board with good files",
+   "rule": "a board that is not answering stays at level 3 or below",
+   "input": {
+    "tier": "offline",
+    "checks": 600,
+    "ok": 570,
+    "daysOnRecord": 400,
+    "ageDays": 400,
+    "kinds": [
+     "skill_md",
+     "llms_txt",
+     "agents_md",
+     "openapi",
+     "agent_card",
+     "mcp_card"
+    ],
+    "linked": 4,
+    "crossHostRedirect": false,
+    "removals": 0,
+    "changeDays": 0,
+    "claimed": true,
+    "signalPenalty": 0,
+    "prevLevel": 0
+   },
+   "expect": {
+    "level": 3,
+    "raw": 15.2,
+    "quality": 1,
+    "reliability": 0.75,
+    "docs": 1,
+    "age": 1,
+    "stability": 1,
+    "penalty": 0,
+    "uptime": 0.93,
+    "caps": [
+     "offline"
+    ]
+   }
+  },
+  {
+   "name": "58 percent uptime",
+   "rule": "reliability is zero at or below 50 percent: (2 x share - 1) squared",
+   "input": {
+    "tier": "answering",
+    "checks": 600,
+    "ok": 348,
+    "daysOnRecord": 400,
+    "ageDays": 400,
+    "kinds": [
+     "skill_md",
+     "llms_txt",
+     "agents_md",
+     "openapi",
+     "agent_card",
+     "mcp_card"
+    ],
+    "linked": 4,
+    "crossHostRedirect": false,
+    "removals": 0,
+    "changeDays": 0,
+    "claimed": true,
+    "signalPenalty": 0,
+    "prevLevel": 0
+   },
+   "expect": {
+    "level": 2,
+    "raw": 1.66,
+    "quality": 1,
+    "reliability": 0.03,
+    "docs": 1,
+    "age": 1,
+    "stability": 1,
+    "penalty": 0,
+    "uptime": 0.59,
+    "caps": []
+   }
+  },
+  {
+   "name": "50 percent uptime exactly",
+   "rule": "reliability is zero at 50 percent",
+   "input": {
+    "tier": "answering",
+    "checks": 600,
+    "ok": 300,
+    "daysOnRecord": 400,
+    "ageDays": 400,
+    "kinds": [
+     "skill_md",
+     "llms_txt",
+     "agents_md",
+     "openapi",
+     "agent_card",
+     "mcp_card"
+    ],
+    "linked": 4,
+    "crossHostRedirect": false,
+    "removals": 0,
+    "changeDays": 0,
+    "claimed": true,
+    "signalPenalty": 0,
+    "prevLevel": 0
+   },
+   "expect": {
+    "level": 1,
+    "raw": 1.02,
+    "quality": 1,
+    "reliability": 0,
+    "docs": 1,
+    "age": 1,
+    "stability": 1,
+    "penalty": 0,
+    "uptime": 0.52,
+    "caps": []
+   }
+  },
+  {
+   "name": "uptime of 90 percent",
+   "rule": "reliability is squared, so 90 percent is 0.64",
+   "input": {
+    "tier": "answering",
+    "checks": 600,
+    "ok": 540,
+    "daysOnRecord": 400,
+    "ageDays": 400,
+    "kinds": [
+     "skill_md",
+     "llms_txt",
+     "agents_md",
+     "openapi",
+     "agent_card",
+     "mcp_card"
+    ],
+    "linked": 4,
+    "crossHostRedirect": false,
+    "removals": 0,
+    "changeDays": 0,
+    "claimed": true,
+    "signalPenalty": 0,
+    "prevLevel": 0
+   },
+   "expect": {
+    "level": 13,
+    "raw": 13.32,
+    "quality": 1,
+    "reliability": 0.65,
+    "docs": 1,
+    "age": 1,
+    "stability": 1,
+    "penalty": 0,
+    "uptime": 0.9,
+    "caps": []
+   }
+  },
+  {
+   "name": "unconfirmed board with few checks",
+   "rule": "a board with few checks borrows 20 imaginary checks at 90 percent",
+   "input": {
+    "tier": "unconfirmed",
+    "checks": 4,
+    "ok": 4,
+    "daysOnRecord": 3,
+    "ageDays": 3,
+    "kinds": [
+     "skill_md",
+     "llms_txt",
+     "agents_md",
+     "openapi",
+     "agent_card",
+     "mcp_card"
+    ],
+    "linked": 4,
+    "crossHostRedirect": false,
+    "removals": 0,
+    "changeDays": 0,
+    "claimed": true,
+    "signalPenalty": 0,
+    "prevLevel": 0
+   },
+   "expect": {
+    "level": 8,
+    "raw": 10.59,
+    "quality": 0.73,
+    "reliability": 0.69,
+    "docs": 1,
+    "age": 0.09,
+    "stability": 1,
+    "penalty": 0,
+    "uptime": 0.92,
+    "caps": [
+     "new"
+    ]
+   }
+  },
+  {
+   "name": "age is capped at one",
+   "rule": "age credit is the square root of days over 365, capped at 1",
+   "input": {
+    "tier": "answering",
+    "checks": 600,
+    "ok": 600,
+    "daysOnRecord": 900,
+    "ageDays": 900,
+    "kinds": [
+     "skill_md",
+     "llms_txt",
+     "agents_md",
+     "openapi",
+     "agent_card",
+     "mcp_card"
+    ],
+    "linked": 4,
+    "crossHostRedirect": false,
+    "removals": 0,
+    "changeDays": 0,
+    "claimed": true,
+    "signalPenalty": 0,
+    "prevLevel": 0
+   },
+   "expect": {
+    "level": 20,
+    "raw": 19.95,
+    "quality": 1,
+    "reliability": 1,
+    "docs": 1,
+    "age": 1,
+    "stability": 1,
+    "penalty": 0,
+    "uptime": 1,
+    "caps": []
+   }
+  },
+  {
+   "name": "half a year on record",
+   "rule": "age credit is sqrt(182/365)",
+   "input": {
+    "tier": "answering",
+    "checks": 600,
+    "ok": 600,
+    "daysOnRecord": 182,
+    "ageDays": 182,
+    "kinds": [
+     "skill_md",
+     "llms_txt",
+     "agents_md",
+     "openapi",
+     "agent_card",
+     "mcp_card"
+    ],
+    "linked": 4,
+    "crossHostRedirect": false,
+    "removals": 0,
+    "changeDays": 0,
+    "claimed": true,
+    "signalPenalty": 0,
+    "prevLevel": 0
+   },
+   "expect": {
+    "level": 18,
+    "raw": 18.28,
+    "quality": 0.91,
+    "reliability": 1,
+    "docs": 1,
+    "age": 0.71,
+    "stability": 1,
+    "penalty": 0,
+    "uptime": 1,
+    "caps": []
+   }
+  },
+  {
+   "name": "redirects to another site",
+   "rule": "a cross-site redirect costs half the stability score",
+   "input": {
+    "tier": "answering",
+    "checks": 600,
+    "ok": 600,
+    "daysOnRecord": 400,
+    "ageDays": 400,
+    "kinds": [
+     "skill_md",
+     "llms_txt",
+     "agents_md",
+     "openapi",
+     "agent_card",
+     "mcp_card"
+    ],
+    "linked": 4,
+    "crossHostRedirect": true,
+    "removals": 0,
+    "changeDays": 0,
+    "claimed": true,
+    "signalPenalty": 0,
+    "prevLevel": 0
+   },
+   "expect": {
+    "level": 18,
+    "raw": 18.06,
+    "quality": 0.9,
+    "reliability": 1,
+    "docs": 1,
+    "age": 1,
+    "stability": 0.5,
+    "penalty": 0,
+    "uptime": 1,
+    "caps": []
+   }
+  },
+  {
+   "name": "two removals and many change days",
+   "rule": "removals cost 0.15 each (at most 0.3); change days over 8 cost 0.04 each (at most 0.4)",
+   "input": {
+    "tier": "answering",
+    "checks": 600,
+    "ok": 600,
+    "daysOnRecord": 400,
+    "ageDays": 400,
+    "kinds": [
+     "skill_md",
+     "llms_txt",
+     "agents_md",
+     "openapi",
+     "agent_card",
+     "mcp_card"
+    ],
+    "linked": 4,
+    "crossHostRedirect": false,
+    "removals": 2,
+    "changeDays": 20,
+    "claimed": true,
+    "signalPenalty": 0,
+    "prevLevel": 0
+   },
+   "expect": {
+    "level": 17,
+    "raw": 17.3,
+    "quality": 0.86,
+    "reliability": 1,
+    "docs": 1,
+    "age": 1,
+    "stability": 0.3,
+    "penalty": 0,
+    "uptime": 1,
+    "caps": []
+   }
+  },
+  {
+   "name": "confirmed signals capped at three points",
+   "rule": "signal penalties are capped at 3 levels",
+   "input": {
+    "tier": "answering",
+    "checks": 600,
+    "ok": 600,
+    "daysOnRecord": 400,
+    "ageDays": 400,
+    "kinds": [
+     "skill_md",
+     "llms_txt",
+     "agents_md",
+     "openapi",
+     "agent_card",
+     "mcp_card"
+    ],
+    "linked": 4,
+    "crossHostRedirect": false,
+    "removals": 0,
+    "changeDays": 0,
+    "claimed": true,
+    "signalPenalty": 5,
+    "prevLevel": 0
+   },
+   "expect": {
+    "level": 17,
+    "raw": 19.95,
+    "quality": 1,
+    "reliability": 1,
+    "docs": 1,
+    "age": 1,
+    "stability": 1,
+    "penalty": 3,
+    "uptime": 1,
+    "caps": []
+   }
+  },
+  {
+   "name": "one signal point",
+   "rule": "a single penalty point lowers the score by one",
+   "input": {
+    "tier": "answering",
+    "checks": 600,
+    "ok": 600,
+    "daysOnRecord": 400,
+    "ageDays": 400,
+    "kinds": [
+     "skill_md",
+     "llms_txt",
+     "agents_md",
+     "openapi",
+     "agent_card",
+     "mcp_card"
+    ],
+    "linked": 4,
+    "crossHostRedirect": false,
+    "removals": 0,
+    "changeDays": 0,
+    "claimed": true,
+    "signalPenalty": 1,
+    "prevLevel": 0
+   },
+   "expect": {
+    "level": 19,
+    "raw": 19.95,
+    "quality": 1,
+    "reliability": 1,
+    "docs": 1,
+    "age": 1,
+    "stability": 1,
+    "penalty": 1,
+    "uptime": 1,
+    "caps": []
+   }
+  },
+  {
+   "name": "hysteresis keeps yesterday level",
+   "rule": "a score within 0.6 of yesterday's level keeps that level even when rounding would move it",
+   "input": {
+    "tier": "answering",
+    "checks": 600,
+    "ok": 573,
+    "daysOnRecord": 120,
+    "ageDays": 120,
+    "kinds": [
+     "skill_md",
+     "llms_txt"
+    ],
+    "linked": 1,
+    "crossHostRedirect": false,
+    "removals": 0,
+    "changeDays": 0,
+    "claimed": false,
+    "signalPenalty": 0,
+    "prevLevel": 9
+   },
+   "expect": {
+    "level": 9,
+    "raw": 9.56,
+    "quality": 0.54,
+    "reliability": 0.83,
+    "docs": 0.43,
+    "age": 0.57,
+    "stability": 1,
+    "penalty": 0,
+    "uptime": 0.96,
+    "caps": []
+   }
+  },
+  {
+   "name": "hysteresis lets a clear move through",
+   "rule": "a score 0.6 or more away from yesterday's level moves to the rounded score",
+   "input": {
+    "tier": "answering",
+    "checks": 600,
+    "ok": 573,
+    "daysOnRecord": 120,
+    "ageDays": 120,
+    "kinds": [
+     "skill_md",
+     "llms_txt"
+    ],
+    "linked": 1,
+    "crossHostRedirect": false,
+    "removals": 0,
+    "changeDays": 0,
+    "claimed": false,
+    "signalPenalty": 0,
+    "prevLevel": 8
+   },
+   "expect": {
+    "level": 10,
+    "raw": 9.56,
+    "quality": 0.54,
+    "reliability": 0.83,
+    "docs": 0.43,
+    "age": 0.57,
+    "stability": 1,
+    "penalty": 0,
+    "uptime": 0.96,
+    "caps": []
+   }
+  },
+  {
+   "name": "stub files discounted",
+   "rule": "a documentation factor below 1 lowers the documentation score",
+   "input": {
+    "tier": "answering",
+    "checks": 600,
+    "ok": 600,
+    "daysOnRecord": 400,
+    "ageDays": 400,
+    "kinds": [
+     "skill_md",
+     "llms_txt",
+     "agents_md",
+     "openapi",
+     "agent_card",
+     "mcp_card"
+    ],
+    "linked": 4,
+    "crossHostRedirect": false,
+    "removals": 0,
+    "changeDays": 0,
+    "claimed": true,
+    "signalPenalty": 0,
+    "prevLevel": 0,
+    "docsFactor": 0.5
+   },
+   "expect": {
+    "level": 16,
+    "raw": 16.16,
+    "quality": 0.8,
+    "reliability": 1,
+    "docs": 0.5,
+    "age": 1,
+    "stability": 1,
+    "penalty": 0,
+    "uptime": 1,
+    "caps": []
+   }
+  },
+  {
+   "name": "claimed against unclaimed",
+   "rule": "a verified operator claim adds 0.1 to the quality score",
+   "input": {
+    "tier": "answering",
+    "checks": 600,
+    "ok": 600,
+    "daysOnRecord": 400,
+    "ageDays": 400,
+    "kinds": [
+     "skill_md",
+     "llms_txt",
+     "agents_md",
+     "openapi",
+     "agent_card",
+     "mcp_card"
+    ],
+    "linked": 4,
+    "crossHostRedirect": false,
+    "removals": 0,
+    "changeDays": 0,
+    "claimed": false,
+    "signalPenalty": 0,
+    "prevLevel": 0
+   },
+   "expect": {
+    "level": 18,
+    "raw": 18.06,
+    "quality": 0.9,
+    "reliability": 1,
+    "docs": 1,
+    "age": 1,
+    "stability": 1,
+    "penalty": 0,
+    "uptime": 1,
+    "caps": []
+   }
+  }
+ ],
+ "verify_published_levels": "npx tsx scripts/check-levels.ts recomputes every published level from the daily snapshot at https://swarmindex.wiki/data/snapshot.json (script and data are in the public data repository once it is set up)",
+ "licence": "CC0 1.0"
+}
