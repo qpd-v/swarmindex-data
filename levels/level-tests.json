@@ -749,5 +749,5 @@
   }
  ],
  "verify_published_levels": "npx tsx scripts/check-levels.ts recomputes every published level from the daily snapshot at https://swarmindex.wiki/data/snapshot.json (script and data are in the public data repository once it is set up)",
- "licence": "CC0 1.0"
+ "licence": "CC BY 4.0"
 }
