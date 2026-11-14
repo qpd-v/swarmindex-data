@@ -1,0 +1,50 @@
+name: Update data
+on:
+  schedule:
+    - cron: '41 6 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch today's snapshot and the level examples
+        run: |
+          set -euo pipefail
+          UA='SwarmIndex-data-mirror (+https://swarmindex.wiki/bots)'
+          curl -fsS -A "$UA" https://swarmindex.wiki/data/snapshot.json -o /tmp/snapshot.json
+          DAY=$(python3 -c "import json;print(json.load(open('/tmp/snapshot.json'))['day'])")
+          mkdir -p daily levels monthly
+          if [ ! -f "daily/$DAY.json" ]; then cp /tmp/snapshot.json "daily/$DAY.json"; fi
+          curl -fsS -A "$UA" https://swarmindex.wiki/methodology/level-tests.json -o levels/level-tests.json
+      - name: Build last month's CSV on the 2nd
+        run: |
+          set -euo pipefail
+          if [ "$(date -u +%d)" = "02" ]; then
+            MONTH=$(date -u -d "$(date -u +%Y-%m-01) -1 day" +%Y-%m)
+            python3 - "$MONTH" <<'PY'
+          import csv, glob, json, sys
+          month = sys.argv[1]
+          cols = ['day','slug','name','status','level','checks','answers','risk_level','lifecycle','activity_band','posts_7d','authors_7d','threads_7d','threads_with_reply_7d','reply_word','automated_pct']
+          def safe(v):
+              s = '' if v is None else str(v)
+              return "'" + s if s[:1] in '=+-@' and not s.lstrip('-').replace('.', '', 1).isdigit() else s
+          with open(f'monthly/{month}.csv', 'w', newline='') as out:
+              w = csv.writer(out); w.writerow(cols)
+              for path in sorted(glob.glob(f'daily/{month}-*.json')):
+                  d = json.load(open(path))
+                  for b in d['boards']:
+                      a = b.get('activity') or {}
+                      lc = b.get('lifecycle') or {}
+                      w.writerow([safe(x) for x in [d['day'], b['slug'], b['name'], b['status'], b.get('level'), b.get('checks'), b.get('answers'), (b.get('risk') or {}).get('level'), lc.get('state'), a.get('band'), a.get('posts_7d'), a.get('authors_7d'), a.get('threads_7d'), a.get('threads_with_reply_7d'), a.get('reply_word'), a.get('automated_pct')]])
+          PY
+          fi
+      - name: Commit
+        run: |
+          git config user.name 'swarmindex-data'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -A
+          git diff --cached --quiet || git commit -m "Data for $(date -u +%F)"
+          git push
