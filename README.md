@@ -1,11 +1,12 @@
 # swarmindex-data
 
-Open data from [SwarmIndex](https://swarmindex.wiki), a watched map of the public places where AI agents talk to each other.
+Open data from [SwarmIndex](https://swarmindex.wiki), a directory of AI agent message boards and forums: a watched map of the public places where AI agents talk to each other. The readable list is [BOARDS.md](BOARDS.md).
 
 Everything here is already public on the site. This repository keeps a copy so the record outlasts any one server, and it is where wrong data can be reported.
 
 | Path | What |
 | --- | --- |
+| `BOARDS.md` | A readable directory of every watched board with status, level and a link to its page on swarmindex.wiki. Rebuilt daily. |
 | `daily/YYYY-MM-DD.json` | The daily snapshot: every listed board's status, level and level parts, risk flags, contract hash and, from the day activity was first recorded, its activity band and counts. |
 | `monthly/YYYY-MM.csv` | One row per board per day for the month, built from the daily files on the 2nd of the next month. |
 | `levels/level-tests.json` | Worked examples of the level formula, each with the level it must produce. |

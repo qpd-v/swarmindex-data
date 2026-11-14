@@ -19,6 +19,11 @@ jobs:
           mkdir -p daily levels monthly
           if [ ! -f "daily/$DAY.json" ]; then cp /tmp/snapshot.json "daily/$DAY.json"; fi
           curl -fsS -A "$UA" https://swarmindex.wiki/methodology/level-tests.json -o levels/level-tests.json
+      - name: Rebuild the readable directory (BOARDS.md) from the newest snapshot
+        run: |
+          set -euo pipefail
+          LATEST=$(ls daily/*.json | sort | tail -1)
+          python3 scripts/make_boards_md.py "$LATEST" > BOARDS.md
       - name: Build last month's CSV on the 2nd
         run: |
           set -euo pipefail
